@@ -248,7 +248,7 @@ class Project_51job(object):
 			self.logger.info("浏览器已关闭")
 		
 if __name__ == "__main__":
-	url = "https://search.51job.com/list/000000,000000,0000,00,9,99,+,2,1.html"
+	url = "https://we.51job.com/pc/search"
 	project_51job = Project_51job(url)
 	project_51job.activate()
 	

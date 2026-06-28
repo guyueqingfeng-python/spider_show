@@ -1,0 +1,79 @@
+{
+  "基础信息": {
+    "url": "",
+    "logger_name": "",
+    "base": {
+      "lazy": false,
+      "headless": false
+    },
+    "wait": {
+      "EC_wait": 20,
+      "find_element_wait": 10
+    }
+  },
+  "找到页面": {
+  "search_box": {
+    "by": "",
+    "value": ""
+  },
+  "search_input": "",
+  "search_btn": {
+    "by": "",
+    "value": ""
+  },
+  "scrape_list": {
+    "by": "",
+    "value": ""
+  }
+  },
+  "method": [
+      "attr",
+      "text",
+      "list_text"
+  ],
+  "查找内容": [
+    {
+      "name": "",
+      "xpath": {
+        "by":"",
+        "value": ""
+      },
+      "find_type": "",
+      "attr": "",
+      "data_clean": true
+    },
+    {
+      "name": "",
+      "xpath": {
+        "by":"",
+        "value": ""
+      },
+      "find_type": "",
+      "attr": "",
+      "data_clean": true
+    }
+  ],
+  "extra": {
+
+  },
+  "保存文件": {
+    "file_name": "",
+    "fold_name": "",
+    "file_type": ""
+  },
+  "爬取页数": {
+    "pages_num": "",
+    "next_btn": {
+      "by": "",
+      "value": ""
+    }
+  },
+  "func": [
+    "search_for_page_numbers",
+    "get_to_work_page",
+    "find_target_object",
+    "find_data",
+    "save_file",
+    "next_page",
+  ]
+}
