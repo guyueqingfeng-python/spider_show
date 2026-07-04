@@ -3,10 +3,11 @@ import time
 import requests
 import os
 import hashlib
-
-from lxml import etree
+from typing import List, Callable, Tuple, Optional, Dict
 import re
 import random
+
+from lxml import etree
 import shutil
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,11 +22,14 @@ from selenium.common.exceptions import (
 )
 
 logger = logging.getLogger("tools")
+
+
 def bass_logging():
     logger.setLevel(logging.INFO)
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
     logger.addHandler(console)
+
 
 def logging_configuration(name, level=logging.INFO, error=True, log_dir="logging", fmt=None):
     logger = logging.getLogger(name)
@@ -47,6 +51,7 @@ def logging_configuration(name, level=logging.INFO, error=True, log_dir="logging
     logger.addHandler(normal_handler)
     logger.addHandler(console)
     logger.info("日志已开启")
+
     def add_error_handler():
         log_file = os.path.join(log_dir, f"error{name}.log")
         error_handler = logging.FileHandler(log_file, encoding="UTF-8")
@@ -54,13 +59,13 @@ def logging_configuration(name, level=logging.INFO, error=True, log_dir="logging
         error_handler.setLevel(logging.WARNING)
         logger.addHandler(error_handler)
         logger.info("错误日志已开启")
-    
+
     if error:
         add_error_handler()
         return logger
 
-def huoqu1(url, tim = 3, picture = False, custom_headers = None):
 
+def huoqu1(url, tim=3, picture=False, custom_headers=None):
     default_headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -77,11 +82,11 @@ def huoqu1(url, tim = 3, picture = False, custom_headers = None):
                 response = session.get(url, timeout=(3, 9))
                 logger.info(f"请求成功:{url}")
                 response.raise_for_status()
-                if  not picture:
+                if not picture:
                     return etree.HTML(response.text)
                 else:
-                    return  response.content
-                
+                    return response.content
+
             except requests.exceptions.RequestException as e:
                 logger.warning("错误：{}".format(e), exc_info=True)
                 if i < (tim - 1):
@@ -91,7 +96,8 @@ def huoqu1(url, tim = 3, picture = False, custom_headers = None):
                     return None
         return None
 
-def huoqu2(url, tim = 3, lazy = 0, yes = 0):
+
+def huoqu2(url, tim=3, lazy=0, yes=0):
     """
     count = 请求次数
     lazy: 0 = 禁止懒加载, 2 = 懒加载
@@ -141,7 +147,8 @@ def huoqu2(url, tim = 3, lazy = 0, yes = 0):
                 logger.error("尝试{}次放弃".format(tim))
                 driver.quit()
                 return None
-            
+
+
 def jcqx(shuju):
     if isinstance(shuju, str):
         return " ".join(shuju.split())
@@ -149,7 +156,8 @@ def jcqx(shuju):
         liebiao = [jcqx(itme) for itme in shuju if itme and str(itme).strip()]
         return " ".join(liebiao)
     return str(shuju).strip()
-        
+
+
 def wjmz(filename):
     filename = filename.replace('..', '')
     file = re.sub(r'[<>:"/\\\'|?*]', '_', filename)
@@ -166,8 +174,6 @@ def wjmz(filename):
     return file
 
 
-
-
 def shru(css, hua):
     hua = list(hua)
     while hua:
@@ -182,11 +188,13 @@ def shru(css, hua):
                 time.sleep(random.uniform(0.1, 0.5))
             else:
                 time.sleep(random.uniform(0.2, 0.8))
-        
+
+
 def install_intervals_input():
     if hasattr(WebElement, 'intervals_input'):
         logger.info("已有方法intervals_input")
         return
+
     def intervals_input(self, sentence):
         sentence = list(sentence)
         while sentence:
@@ -201,27 +209,30 @@ def install_intervals_input():
                     time.sleep(random.uniform(0.1, 0.5))
                 else:
                     time.sleep(random.uniform(0.2, 0.8))
+
     WebElement.intervals_input = intervals_input
     logger.info("添加intervals_input方法成功")
-
 
 
 def qhwy(driver):
     i = driver.window_handles
     driver.switch_to.window(i[-1])
     logger.info("已切换句柄致最新页面")
-    
+
+
 class RuntimeError(Exception):
     def __init__(self, value):
         self.value = value
-        
+
+
 class NopathError(Exception):
     def __init__(self, value):
         self.value = value
-        
+
     def __str__(self):
         return self.message
-        
+
+
 def establish_folder_path(name):
     path = [
         ("D盘", r"D:\pycharm"),
@@ -269,7 +280,8 @@ def establish_folder_path(name):
         logger.warning(f"未知错误：{type(e).__name__} - {e}", exc_info=True)
     logger.error("目前无写入文件权限")
     raise NopathError("目前无写入文件权限")
-    
+
+
 def wait_page_form(wait, by, value, max_attempts):
     """
         等待容器加载
@@ -278,7 +290,7 @@ def wait_page_form(wait, by, value, max_attempts):
         :param value: 定位值
         :param max_attempts: 最大尝试次数
         """
-    for i in range(1, max_attempts+1):
+    for i in range(1, max_attempts + 1):
         try:
             logger.info("等待页面加载")
             wait.until(
@@ -313,10 +325,28 @@ def get_by(config):
     by_type = by_map.get(config["by"])
     if not by_type:
         raise ValueError(f"不支持的定位方式: {config['by']}")
+    return by_type, config["value"]
 
-    return (by_type, config["value"])
 
-def file_duplication_process(path, start_num = 1):
+def preserve_wait(
+        wait_normally: Tuple[float, ...] = (5.0, 9.0),
+        wait_long: Tuple[float, ...] = (15.0, 25.0),
+        wait_quick: Tuple[float, ...] = (3.0, 5.0)
+):
+    wait_time = random.random()
+    lose_interest = 0.2
+    # 0.3比0.2大0.1实际上就是0.1
+    interest = 0.3
+    # 剩下的0.7为正常时间
+    if wait_time < lose_interest:
+        time.sleep(random.uniform(*wait_quick))
+    elif wait_time < interest:
+        time.sleep(random.uniform(*wait_long))
+    else:
+        time.sleep(random.uniform(*wait_normally))
+
+
+def file_duplication_process(path, start_num=1):
     fold = os.path.dirname(path)
     file = os.path.basename(path)
     name, ext = os.path.splitext(file)
@@ -338,9 +368,8 @@ def file_duplication_process(path, start_num = 1):
             name = "".join(name.split(".")[:-1])
             file = f"{name}.{versions}{ext}"
             path = os.path.join(fold, file)
-            
 
-    
+
 def ljcd(path):
     path = os.path.normpath(path)
     path = os.path.abspath(path)
@@ -361,6 +390,7 @@ def ljcd(path):
         return npath
     else:
         return path
+
 
 def mllj(path):
     path = os.path.normpath(path)
