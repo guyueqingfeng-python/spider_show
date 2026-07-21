@@ -73,7 +73,7 @@ def huoqu(cxx, driver):
 		# 	button1 = driver.find_element(By.XPATH, "(.//button[contains(@class, 'el-button el-button--primary')])[3]")
 		# 	button1.click()
 		# 	sleep(random.uniform(5, 9))
-		# 	tools.qhwy(driver)
+		# 	tool.qhwy(driver)
 		# 	button2 = driver.find_element(By.XPATH, '(.//button[@class = "el-dialog__headerbtn"])[4]')
 		# 	sleep(random.uniform(0.5, 1.5))
 		# 	button2.click()
@@ -83,7 +83,7 @@ def huoqu(cxx, driver):
 		# 	cid["薪资"] = driver.find_element(By.CLASS_NAME, "salary").get_attribute("title")
 		# 	sleep(random.uniform(0.5, 1.5))
 		# 	wei1 = driver.find_elements(By.XPATH, './/div[@class="detail-title-left-center"]/div[@class = "item"]/span')
-		# 	wei1 = list(map(lambda x: tools.jcqx(x.text), wei1))
+		# 	wei1 = list(map(lambda x: tool.jcqx(x.text), wei1))
 		# 	n = wei1[:-1]
 		# 	cid["条件"] = " ".join(n[1:])
 		# 	sleep(random.uniform(0.5, 1.5))
@@ -103,7 +103,7 @@ def huoqu(cxx, driver):
 		# 		cid["上班地址"] = "暂无数据"
 		# 	driver.close()
 		# 	sleep(5)
-		# 	tools.qhwy(driver)
+		# 	tool.qhwy(driver)
 		return cid
 		
 def lj(path, x):
