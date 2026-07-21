@@ -1,3 +1,5 @@
+import json
+
 import logging
 import time
 import requests
@@ -8,6 +10,7 @@ import re
 import random
 
 from lxml import etree
+import pandas as pd
 import shutil
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -368,6 +371,94 @@ def file_duplication_process(path, start_num=1):
             name = "".join(name.split(".")[:-1])
             file = f"{name}.{versions}{ext}"
             path = os.path.join(fold, file)
+
+
+def save_excel(data, file_path, sheet_name="Sheet1", excel="csv"):
+    if isinstance(data, dict):
+        df = pd.DataFrame(data)
+    elif isinstance(data, list) and all(isinstance(itme, dict) for itme in data):
+        df = pd.DataFrame(data)
+    elif isinstance(data, pd.DataFrame):
+        df = data
+    else:
+        raise ValueError(logger.error(f"数据类型错误，不支持:{type(data)}"))
+    if excel == "csv":
+        df.to_csv(file_path, index=False, encoding="utf-8-sig")
+    elif excel == "xlsx":
+        df.to_excel(file_path, index=False, sheet_name=sheet_name)
+    else:
+        raise ValueError(logger.error(f"参数输入错误, 不是可储存文件类型"))
+    return None
+
+
+def save_txt(data, file_path):
+    with open(file_path, "w", encoding="utf-8") as f:
+
+        def save(data, f, indent_level=0):
+            indent = "    " * indent_level
+
+            if isinstance(data, dict):
+                for key, value in data.items():
+                    f.write(f"{indent}{key}:\n")
+                    if isinstance(value, (dict, list)):
+                        save(value, f, indent_level + 1)
+                    else:
+                        if value is None:
+                            f.write(f"None\n")
+                        else:
+                            f.write(f"{value}\n")
+
+            elif isinstance(data, list):
+                if not data:
+                    f.write("None\n")
+                else:
+                    for content in data:
+                        if isinstance(content, (dict, list)):
+                            save(content, f, indent_level)
+                        else:
+                            f.write(f"{indent}- {content}\n")
+            elif isinstance(data, str):
+                f.write(f"{indent}{data}\n")
+
+            elif data is None:
+                f.write(f"None\n")
+
+            else:
+                f.write(f"{indent}{data}\n")
+
+        save(data, f)
+    return None
+
+
+def save_binary(data, file_path):
+    with open(file_path, "wb") as f:
+        f.write(data)
+
+
+def save_json(data, file_path):
+    if isinstance(data, dict) or (isinstance(data, list) and all(isinstance(item, dict) for item in data)):
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    else:
+        raise ValueError(logger.error(f"数据类型错误，不支持:{type(data)}"))
+
+
+def file_save_type(data, file_path, file_type: str = "txt", sheet_name="Sheet1"):
+    file_type_list = ["csv", "txt", "jnp", "log", "xlsx", "json"]
+    file_type = file_type.lower()
+    if file_type in file_type_list:
+        if file_type == "csv":
+            save_excel(data, file_path, excel="csv")
+        elif file_type in ("txt", "log"):
+            save_txt(data, file_path)
+        elif file_type == "jnp":
+            save_binary(data, file_path)
+        elif file_type == "xlsx":
+            save_excel(data, file_path, sheet_name, excel="xlsx", )
+        elif file_type == "json":
+            save_json(data, file_path)
+        else:
+            raise ValueError(f"不支持的格式: {file_type}")
 
 
 def ljcd(path):
