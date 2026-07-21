@@ -30,8 +30,8 @@ class Project_51job(object):
 	def __init__(self, url: str) -> None:
 		"""
 		count = 请求次数
-		lazy: 0 = 禁止懒加载, 2 = 懒加载
-		yes: 0 = 不是无头, 1 = 无头
+		lazy_loading: 0 = 禁止懒加载, 2 = 懒加载
+		headless: 0 = 不是无头, 1 = 无头
 		"""
 		count = 3
 		lazy = 2
