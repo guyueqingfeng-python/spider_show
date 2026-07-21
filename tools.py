@@ -21,7 +21,7 @@ from selenium.common.exceptions import (
     TimeoutException
 )
 
-logger = logging.getLogger("tools")
+logger = logging.getLogger("tool")
 
 
 def bass_logging():
@@ -100,8 +100,8 @@ def huoqu1(url, tim=3, picture=False, custom_headers=None):
 def huoqu2(url, tim=3, lazy=0, yes=0):
     """
     count = 请求次数
-    lazy: 0 = 禁止懒加载, 2 = 懒加载
-    yes: 0 = 不是无头, 1 = 无头
+    lazy_loading: 0 = 禁止懒加载, 2 = 懒加载
+    headless: 0 = 不是无头, 1 = 无头
     """
     options = Options()
     if yes:
