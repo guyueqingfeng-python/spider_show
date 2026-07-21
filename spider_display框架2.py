@@ -2,12 +2,10 @@ import os
 import json
 from time import sleep
 from random import uniform
-from random import random
 from typing import List, Callable, Tuple, Optional, Dict
 
-from aiohttp.client_exceptions import ssl_errors
+
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.devtools.v143.browser import close
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import (
