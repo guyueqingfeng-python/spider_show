@@ -16,6 +16,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support import expected_conditions as EC
@@ -121,7 +122,7 @@ def huoqu2(url, tim=3, lazy=0, yes=0):
         'profile.managed_default_content_settings.notifications': 2
     }
     options.add_experimental_option('prefs', prefs)
-    service = Service()
+    service = Service(ChromeDriverManager().install())
     for i in range(tim):
         try:
             driver = webdriver.Chrome(service=service, options=options)
